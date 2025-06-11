@@ -1,0 +1,398 @@
+{
+  "name": "day 3 workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1V2Eqxoh6fpeioFIPmT0m4flvU7oepDZKld0OmPLwSi0",
+          "mode": "list",
+          "cachedResultName": "n8n project responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2Eqxoh6fpeioFIPmT0m4flvU7oepDZKld0OmPLwSi0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1519534988,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2Eqxoh6fpeioFIPmT0m4flvU7oepDZKld0OmPLwSi0/edit#gid=1519534988"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        -445
+      ],
+      "id": "0169c083-2ec2-4ea3-a515-6f22f8a2bb5e",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "QjNQurMtOiyGwTMc",
+          "name": "Google Sheets Trigger account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0880fe49-c1b2-45e0-baf7-a8eab284a669",
+              "name": "Name",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "3ecac54f-d30a-43e5-b2a5-028297968644",
+              "name": "e-mail",
+              "value": "={{ $json['e-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5dff9306-f6b5-4cc2-bef7-94bb9a3cd06c",
+              "name": "meeting date",
+              "value": "={{ $json['meeting date'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e8e68e4b-332a-47ec-9164-c3e9e724c051",
+              "name": "notes",
+              "value": "={{ $json.notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -700,
+        -600
+      ],
+      "id": "3fbd7718-80f1-47b8-81c2-b4045380a4b6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{$json[\"Meeting Notes\"].split(\",\")}}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        -440
+      ],
+      "id": "ff8b9945-e71c-4027-b36b-8a4ab60776f9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        -600
+      ],
+      "id": "faeef992-c8df-41a8-a480-2878f0f3d313",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const action = item.json.data || \"\";  // fallback if data undefined\n  const match = action.trim().match(/(.*?)\\s+to\\s+(.*)/i);\n\n  return {\n    json: {\n      person: match ? match[1].trim() : \"Unknown\",\n      task: match ? match[2].trim() : action\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        -460
+      ],
+      "id": "c1522851-b889-47a6-b293-9107d9da1def",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const taskMap = {};\n\nitems.forEach(item => {\n  const person = item.json.person;\n  if (!taskMap[person]) {\n    taskMap[person] = [];\n  }\n  taskMap[person].push(item.json.task);\n});\n\nreturn Object.entries(taskMap).map(([person, tasks]) => ({\n  json: {\n    person,\n    tasks,\n    email: person.toLowerCase().split(\" \")[0] + \"@yourdomain.com\"  // Modify this!\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -460
+      ],
+      "id": "ea869cc9-14ac-4c3f-a213-e174f5f3cfeb",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "086e8740-2981-4032-a11e-5080d860d801",
+              "name": "e-mail",
+              "value": "=Hi {{ $json[\"person\"] }},\n\nHere are your action items from the meeting:\n\n{{ $json[\"tasks\"].map((task, index) => (index+1) + \". \" + task).join(\"\\n\") }}\n\nRegards,  \nMeeting Tracker Bot\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        140,
+        -580
+      ],
+      "id": "ee5a7e0e-198b-4b60-b1be-5f74f387f8b7",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "sendTo": "dhaarani.s.dtywings@snsgroups.com",
+        "subject": "Meeting notes",
+        "message": "Hey. Hope you're doing well. These are the meeting notes for your referral. Make sure to keep updated and complete the tasks at the earliest. Happy working!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        -760
+      ],
+      "id": "a5c6fa23-0e57-4526-83c5-d2fbcc960fe2",
+      "name": "Gmail",
+      "webhookId": "487d4c9b-d62a-4870-a183-74ae7937ea23",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9J8MBatUlD6ytA7R",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Hey what happened in the meeting",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        -380
+      ],
+      "id": "a87ef307-bf27-4188-96e3-2cdc376b13df",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        120,
+        -320
+      ],
+      "id": "ea8c28fc-ffec-4b72-a8e1-b9fc2158f91a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bx2K16T52Yrwo3jX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "\nYou’ve been assigned a new task:\n\n🗂 Task: Prepare a summary of today's project review meeting\n📅 Due Date: 13th June 2025\n⏰ Deadline: Before 5:00 PM\n📌 Details:\n\nInclude all key decisions and action items discussed\n\nHighlight individual responsibilities\n\nShare the summary with the entire team via email and upload it to the shared Google Drive folder\n\nIf you need any clarifications, feel free to reach out. Thank you for your prompt attention!",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -400,
+        -780
+      ],
+      "id": "5505f24e-244b-49be-bb9c-15c76b2376a5",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        -600
+      ],
+      "id": "137c015c-fdd8-47cc-bf13-4ee74a9665d8",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bx2K16T52Yrwo3jX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dc62aa55-c97f-49c6-ba1f-47d830b31606",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f30b3fe0920aae7f859c25b3c7e769fea5aa2d045058e748503f710a2f1e1b37"
+  },
+  "id": "oJ0w10VaytLzaFLb",
+  "tags": []
+}
