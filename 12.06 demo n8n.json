@@ -1,0 +1,314 @@
+{
+  "name": "12.06",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1871bdf0-ca9c-450a-826b-8a72bbc05ae8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -220
+      ],
+      "id": "960c3a50-c3f9-4bac-a028-f39ffa9ccecc",
+      "name": "Webhook",
+      "webhookId": "1871bdf0-ca9c-450a-826b-8a72bbc05ae8"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\n\nfor (const item of $input.all()) {\n  const data = item.json.body || item.json;  // support both structures\n\n  items.push({\n    json: {\n      Username: data.username || \"N/A\",\n      \"Meeting Title\": data.meeting_title || \"N/A\",\n      \"Action Item\": data.action_item || \"N/A\",\n      \"Assigned To\": data.assigned_to || \"N/A\",\n      Email: data.email || \"N/A\",\n      \"Due Date\": data.due_date || \"N/A\"\n    }\n  });\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -40
+      ],
+      "id": "230e7530-f53a-4e05-a3c0-83eaec330d23",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8",
+          "mode": "list",
+          "cachedResultName": "12.06 demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Meeting Title",
+              "displayName": "Meeting Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Action Item",
+              "displayName": "Action Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assigned To",
+              "displayName": "Assigned To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -20,
+        -120
+      ],
+      "id": "fa05417d-77e1-4f21-ae8c-dc157d21f77d",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ooVjeZoMqbgsC4m3",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8",
+          "mode": "list",
+          "cachedResultName": "12.06 demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZl7vJD7083BRcOTbs84yxELI_EYROvH4wKHwQIKoQ8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        200,
+        0
+      ],
+      "id": "9e6e3141-cd54-40bd-934a-65601a9b32db",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ooVjeZoMqbgsC4m3",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful assistant creating clean summaries of meeting action items.\n\nFormat the response using simple bullet points. Use plain text — no markdown, no asterisks, no extra slashes. Just return clean, human-readable output with bullet points, like this:\n\n• Title: [value]  \n• Action: [value]  \n• Assigned To: [value]  \n• Email: [value]  \n• Due Date: [value]  \n• Submitted By: [value]\n\nInput:\n- Meeting Title: {{ $json['Meeting Title'] }}\n- Action Item: {{ $json['Action Item'] }}\n- Assigned To: {{ $json['Assigned To'] }}\n- Email: {{ $json['Email'] }}\n- Due Date: {{ $json['Due Date'] }}\n- Submitted By: {{ $json['Username'] }}\n\nMake sure the action item is clear and all fields are complete. Return only the final bullet points.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        380,
+        -240
+      ],
+      "id": "2351e724-df2b-4d46-ba61-320959492574",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        480,
+        80
+      ],
+      "id": "a9eeb0d8-719c-41e9-bd08-e14d3a3604e9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bx2K16T52Yrwo3jX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "dhaarani.s.dtywings@snsgroups.com",
+        "subject": "Meeting",
+        "message": "=Subject: Meeting Action Item Assigned - 12.06 Demo Project\n\nHi Dhaarani,\n\nA new meeting action item has been assigned to you. Please find the details below:\n\nTitle: 12.06 Demo Project  \nAction: Compile department-wise updates and submit a consolidated report on project progress.  \nAssigned To: Dhaarani  \nEmail: dhaarani.s.dtywings@snsgroups.com  \nDue Date: 2025-06-12  \nSubmitted By: dhaarani\n\nPlease take the necessary steps to complete this task on or before the due date.  \nLet me know if you have any questions.\n\nThanks,  \nEmployee Portal\n",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        740,
+        -20
+      ],
+      "id": "f40c79c4-c7b8-4cc3-9b13-cdafebe61ce0",
+      "name": "Gmail",
+      "webhookId": "159c38f8-1779-457f-a4a0-2b4ada3b0de4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9J8MBatUlD6ytA7R",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15262c75-0aa1-4fe3-9c25-b6e1a60c0de4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f30b3fe0920aae7f859c25b3c7e769fea5aa2d045058e748503f710a2f1e1b37"
+  },
+  "id": "rlC9yNCaQRRZxTI8",
+  "tags": []
+}
