@@ -1,0 +1,771 @@
+{
+  "name": "IIT events",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "fetch-competitions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2920,
+        180
+      ],
+      "id": "d891ee59-5074-4351-aa5d-4b8ddda30538",
+      "name": "Webhook",
+      "webhookId": "87e44821-1638-4e8f-b9df-1baa207af9a2"
+    },
+    {
+      "parameters": {
+        "url": "https://r.jina.ai/https://www.knowafest.com/explore/cultural-fests-iits ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer jina_a0a12edbef4146d8a82a3cdfae187bbbMxDbT3usMN-VNUN3m9e8nryqxgoL"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2040,
+        100
+      ],
+      "id": "fd371870-abf8-4ef6-b14b-0f6cc85ae6cc",
+      "name": "Get Fest Website"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo",
+          "mode": "list",
+          "cachedResultName": "ClubRegistrationResponses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 731111312,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit#gid=731111312"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "table"
+          ],
+          "schema": [
+            {
+              "id": "table",
+              "displayName": "table",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1200,
+        360
+      ],
+      "id": "86feace7-5a44-4b98-a463-76b5d17af916",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tA4zD990kDR8GA3K",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc8dbfe5-a083-4d3b-8a22-b6e00ffc3fec",
+              "name": "name",
+              "value": "={{ $('Google Sheets1').item.json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "33c05712-b398-4ea8-afdf-327380e89ca9",
+              "name": "email",
+              "value": "={{ $('Google Sheets1').item.json['Email ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d09bdb7c-2d60-4863-a91f-3e035cfa9466",
+              "name": "club",
+              "value": "={{ $('Google Sheets1').item.json['Club Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "14b818af-cb3a-440d-8032-0b2d5215786e",
+              "name": "title",
+              "value": "={{ $('Information Extractor').item.json.output['Event Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d335d59f-a35a-4842-8a69-180966e11449",
+              "name": "college/place",
+              "value": "={{ $('Information Extractor').item.json.output.Place }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -740,
+        40
+      ],
+      "id": "a593d1c5-a9b5-4222-9da5-941435d0e690",
+      "name": "Non-Technical events"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email ID'] }}",
+        "subject": "=New Event Opportunity",
+        "emailType": "text",
+        "message": "=`Dear {{ $json.Name }}\n\nHappy to know that you are a part of our institutional club activities.\n\nTo create an elite exposure for you, I am sending you a list of events happening at elite institutions.\n\n👉 Apply or know more here: https://www.knowafest.com/explore/cultural-fests-iits\n\nRegards,  \nDhaarani\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -440,
+        100
+      ],
+      "id": "c93d2223-0821-43c2-99e4-0e47fc5a6003",
+      "name": "Personalized mail",
+      "webhookId": "1c47da41-a3bb-45b4-b8e0-1567fe689d21",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6etHyeNaHUSkAPdA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fb4cbdce-f989-44d8-b68b-cd48d9f2c37f",
+              "leftValue": "={{$json[\"title\"].toLowerCase()}}\n",
+              "rightValue": "={{$json[\"Club\"].toLowerCase()}}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1000,
+        120
+      ],
+      "id": "51b5da70-df60-4ef0-9b2c-148ea2950f6f",
+      "name": "If Tech/Non tech"
+    },
+    {
+      "parameters": {
+        "sendTo": "angeltoucharchitectinteriors@gmail.com",
+        "subject": "\"Student Club Registration Form 2025\"",
+        "emailType": "text",
+        "message": "Dear Sir/Madam,  Kindly share this registration form with all students for enrolling into our 20 official student clubs.         Google Form Link: https://docs.google.com/forms/d/1U0o7iSuYRgQx0ytgrDGkm4wsQfnLuoO2Vqlp1xLbWLg/edit  Best regards,  Dhaarani S",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -2720,
+        20
+      ],
+      "id": "8e045052-a7df-4d5e-b5f4-1fe6396e999e",
+      "name": "Gmail",
+      "webhookId": "a22a94dc-5a53-41c7-b345-e5ee5b2ab02c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6etHyeNaHUSkAPdA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo",
+          "mode": "list",
+          "cachedResultName": "ClubRegistrationResponses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 237427624,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit#gid=237427624"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2380,
+        360
+      ],
+      "id": "78176df9-5a71-4644-a11f-d425170e7747",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tA4zD990kDR8GA3K",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "292f0754-a3f0-478c-8d5c-f65b08f6b53b",
+              "name": "urls",
+              "value": "=[\n  \"https://www.iitm.ac.in/events\",\n  \"https://www.iimb.ac.in/events\",\n  \"https://www.nitt.edu/home/students/clubsnassociations/\"\n]\n",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2240,
+        100
+      ],
+      "id": "14c84ff9-4eac-4989-ac67-52fb815e7120",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo",
+          "mode": "list",
+          "cachedResultName": "ClubRegistrationResponses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 237427624,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n4vfOBtoP_rcUye9gUSmYljqSwHslpHSHNa0cRWvcHo/edit#gid=237427624"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Year",
+              "displayName": "Year",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp Number",
+              "displayName": "WhatsApp Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Club Name",
+              "displayName": "Club Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2560,
+        360
+      ],
+      "id": "0fcb41c6-9642-4b5b-86f8-04c2a968f39a",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tA4zD990kDR8GA3K",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Clean the following content and extract only the useful readable text about events (titles, places, dates, and links). Remove all images, buttons, code, and unnecessary details.\n\nContent:\n{{ $json['data']}}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -1860,
+        -60
+      ],
+      "id": "f36c7a43-3a52-4c38-86f3-58677af52ef0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1620,
+        380
+      ],
+      "id": "2cba7a15-31cf-4db4-9c77-1415535b9b9e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "DS8LZQZBkVeKPtA5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json['output'] }}",
+        "schemaType": "manual",
+        "inputSchema": "[\n  {\n    \"Event Name\": \"Antaragni 2025\",\n    \"Place\": \"IIT Kanpur, Uttar Pradesh\"\n  },\n  {\n    \"Event Name\": \"Kashiyatra 2025\",\n    \"Place\": \"IIT BHU, Uttar Pradesh\"\n  },\n  {\n    \"Event Name\": \"Mood Indigo 2025\",\n    \"Place\": \"IIT Bombay, Maharashtra\"\n  }\n]\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.1,
+      "position": [
+        -1460,
+        40
+      ],
+      "id": "9eb019f9-c487-4cb2-876b-a3149bcca5c0",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1820,
+        580
+      ],
+      "id": "f80726cd-22b5-4803-bffe-da59757edb17",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "34bf27ec-7087-42d9-bf00-80495761fef2",
+              "leftValue": "=Email ID",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ade88dcf-c51e-425b-9282-99629c4d0963",
+              "leftValue": "={{$json[\"Email ID\"]}}\n",
+              "rightValue": ".+@.+\\..+",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "c94a6f44-192a-4c3c-a2e4-f2a7461e228d",
+              "leftValue": "={{$json[\"Name\"]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1580,
+        580
+      ],
+      "id": "676f3bd1-104a-4e8f-8c4f-2c2de4628d93",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1418dac2-1aad-4113-afa6-178cc2f72bb9",
+              "name": "Name",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "d6a15897-51cb-4d92-afe9-428d2d1bdcc4",
+              "name": "Email ID",
+              "value": "={{ $json['Email ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5a3d6a02-2d2b-4d96-b018-d79659da76d6",
+              "name": "Club Name",
+              "value": "={{ $json['Club Name'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1380,
+        580
+      ],
+      "id": "a9c1d41e-7512-4300-a384-0dc8d69efc83",
+      "name": "Edit Fields2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Fest Website": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "If Tech/Non tech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Non-Technical events": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If Tech/Non tech": {
+      "main": [
+        [
+          {
+            "node": "Non-Technical events",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get Fest Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Personalized mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "36f8b306-3ec9-4608-9082-3823decaa61e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7263c01b2bd19865fb15a36530c6f61d7340e8288222585765b64e6711c0e18d"
+  },
+  "id": "MrggCsUC5tkND8yr",
+  "tags": []
+}
